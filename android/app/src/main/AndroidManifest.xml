@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.nav">
+    package="com.example.firebase_one">
    <application
-        android:label="nav"
+        android:label="firebase_one"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

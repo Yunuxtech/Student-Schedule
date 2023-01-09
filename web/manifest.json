@@ -1,6 +1,6 @@
 {
-    "name": "nav",
-    "short_name": "nav",
+    "name": "firebase_one",
+    "short_name": "firebase_one",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
