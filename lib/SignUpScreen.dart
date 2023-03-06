@@ -28,80 +28,87 @@ class _signUpScreenState extends State<signUpScreen> {
 
 // add form
     Widget _buildemail() {
-      return TextFormField(
-        decoration: InputDecoration(
-            labelText: "Email",
-            hintText: "youremail@gmail.com",
-            fillColor: Colors.red),
-        style: TextStyle(
-          fontSize: 12,
+      return SingleChildScrollView(
+        child: TextFormField(
+          decoration: InputDecoration(
+              labelText: "Email",
+              hintText: "youremail@gmail.com",
+              fillColor: Colors.red),
+          style: TextStyle(
+            fontSize: 12,
+          ),
+          validator: (value) {
+            if (value!.isEmpty) {
+              return 'Please Enter your Email Address';
+            }
+            return null;
+          },
+          onSaved: (value) {
+            _email = value!;
+          },
         ),
-        validator: (value) {
-          if (value!.isEmpty) {
-            return 'Please Enter your Email Address';
-          }
-          return null;
-        },
-        onSaved: (value) {
-          _email = value!;
-        },
       );
     }
 
     Widget _buildName() {
-      return TextFormField(
-        decoration: InputDecoration(
-            labelText: "FullName",
-            hintText: "Isah Yunus",
-            fillColor: Colors.red),
-        style: TextStyle(
-          fontSize: 12,
+      return SingleChildScrollView(
+        child: TextFormField(
+          decoration: InputDecoration(
+              labelText: "FullName",
+              hintText: "Isah Yunus",
+              fillColor: Colors.red),
+          style: TextStyle(
+            fontSize: 12,
+          ),
+          validator: (value) {
+            if (value!.isEmpty) {
+              return 'Please Enter your Fullname';
+            }
+            return null;
+          },
+          onSaved: (value) {
+            _fullname = value!;
+          },
         ),
-        validator: (value) {
-          if (value!.isEmpty) {
-            return 'Please Enter your Fullname';
-          }
-          return null;
-        },
-        onSaved: (value) {
-          _fullname = value!;
-        },
       );
     }
 
     Widget _buildPassword() {
-      return TextFormField(
-        obscureText: false,
-
-        decoration:
-            InputDecoration(labelText: "Password", hintText: "********"),
-        style: TextStyle(fontSize: 12),
-        validator: (value) {
-          if (value!.isEmpty) {
-            return 'Please Enter your Password';
-          }
-          return null;
-        },
-        onSaved: (value) {
-          _password = value!;
-        },
+      return SingleChildScrollView(
+        child: TextFormField(
+          obscureText: false,
+          decoration:
+              InputDecoration(labelText: "Password", hintText: "********"),
+          style: TextStyle(fontSize: 12),
+          validator: (value) {
+            if (value!.isEmpty) {
+              return 'Please Enter your Password';
+            }
+            return null;
+          },
+          onSaved: (value) {
+            _password = value!;
+          },
+        ),
       );
     }
 
     Widget _buildRegNo() {
-      return TextFormField(
-        decoration: InputDecoration(
-            labelText: "Registraion No.", hintText: "CST/17/IFT/...."),
-        style: TextStyle(fontSize: 12),
-        validator: (value) {
-          if (value!.isEmpty) {
-            return 'Please Enter your Reg.No';
-          }
-          return null;
-        },
-        onSaved: (value) {
-          _regno = value!;
-        },
+      return SingleChildScrollView(
+        child: TextFormField(
+          decoration: InputDecoration(
+              labelText: "Registraion No.", hintText: "CST/17/IFT/...."),
+          style: TextStyle(fontSize: 12),
+          validator: (value) {
+            if (value!.isEmpty) {
+              return 'Please Enter your Reg.No';
+            }
+            return null;
+          },
+          onSaved: (value) {
+            _regno = value!;
+          },
+        ),
       );
     }
 
@@ -121,7 +128,7 @@ class _signUpScreenState extends State<signUpScreen> {
               // crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(
-                  height: 15,
+                  height: 10,
                 ),
                 Center(
                   child: Text(
@@ -133,45 +140,45 @@ class _signUpScreenState extends State<signUpScreen> {
                   ),
                 ),
                 SizedBox(
-                  height: 10,
+                  height: 5,
                 ),
                 Padding(
                   padding: const EdgeInsets.all(12),
-                  child: Container(
-                    width: MediaQuery.of(context).size.height * 0.4,
-                    height: MediaQuery.of(context).size.height * 0.7,
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
-                            spreadRadius: 2,
-                            blurRadius: 2,
-                            offset: Offset(0, 3),
-                          ),
-                        ]),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Text(
-                            "SIGN UP",
-                            style: TextStyle(
-                                color: Color.fromARGB(255, 72, 158, 228),
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15),
-                          ),
-                          SizedBox(
-                            height: 25,
-                          ),
-                          Form(
+                  child: SingleChildScrollView(
+                    child: Container(
+                      width: MediaQuery.of(context).size.height * 0.4,
+                      height: MediaQuery.of(context).size.height * 0.7,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.2),
+                              spreadRadius: 2,
+                              blurRadius: 2,
+                              offset: Offset(0, 3),
+                            ),
+                          ]),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Text(
+                              "SIGN UP",
+                              style: TextStyle(
+                                  color: Color.fromARGB(255, 72, 158, 228),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15),
+                            ),
+                            
+
+                            Form(
                               key: _formkey,
                               child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   children: <Widget>[
                                     _buildName(),
                                     _buildRegNo(),
@@ -180,55 +187,62 @@ class _signUpScreenState extends State<signUpScreen> {
                                     SizedBox(
                                       height: 10,
                                     ),
-                                  ])),
-                          SizedBox(
-                            height: 30,
-                          ),
+                                  ]),
+                            ),
 
-                          //  added button
-                          Container(
-                            height: 40,
-                            padding: const EdgeInsets.only(left: 10, right: 10),
-                            width: 200,
-                            child: ElevatedButton(
-                              autofocus: false,
-                              onPressed: () {
-                                if (_formkey.currentState!.validate()) {
-                                  _formkey.currentState!.save();
-                                  toastmessage(
-                                      "Sign Up Successfully, Proceed to Login");
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) => signUpScreen()));
-                                }
-                              },
-                              style: ButtonStyle(
-                                shape: MaterialStateProperty.all<
-                                    RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
+                            SizedBox(
+                              height: 10,
+                            ),
+
+                            //  added button
+                           Container(
+                                height: 40,
+                                padding:
+                                    const EdgeInsets.only(left: 10, right: 10),
+                                width: 200,
+                                child: ElevatedButton(
+                                  autofocus: false,
+                                  onPressed: () {
+                                    if (_formkey.currentState!.validate()) {
+                                      _formkey.currentState!.save();
+                                      toastmessage(
+                                          "Sign Up Successfully, Proceed to Login");
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  signUpScreen()));
+                                    }
+                                  },
+                                  style: ButtonStyle(
+                                    shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                    ),
+                                    backgroundColor: MaterialStateProperty.all(
+                                      Color.fromARGB(255, 84, 169, 219),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    "SIGN UP",
                                   ),
                                 ),
-                                backgroundColor: MaterialStateProperty.all(
-                                  Color.fromARGB(255, 84, 169, 219),
-                                ),
                               ),
-                              child: Text(
-                                "SIGN UP",
-                              ),
-                            ),
-                          ),
+                            
 
-                          // roundbutton(
-                          //     title: "Sign Up",
-                          //     tapfun: () {
-                          //       if (_formkey.currentState!.validate()) {
-                          //         toastmessage(
-                          //             "Registration Sucessful, proceed to Login");
-                          //       }
+                            // roundbutton(
+                            //     title: "Sign Up",
+                            //     tapfun: () {
+                            //       if (_formkey.currentState!.validate()) {
+                            //         toastmessage(
+                            //             "Registration Sucessful, proceed to Login");
+                            //       }
 
-                          //       // });
-                          //     }),
-                        ],
+                            //       // });
+                            //     }),
+                          ],
+                        ),
                       ),
                     ),
                   ),
