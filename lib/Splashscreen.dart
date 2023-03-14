@@ -24,8 +24,8 @@ class _splashscreenState extends State<splashscreen> {
     if (user != null) {
       Timer(
         const Duration(seconds: 5),
-        () => Navigator.push(context,
-            MaterialPageRoute(builder: (context) => MyApp())),
+        () => Navigator.push(
+            context, MaterialPageRoute(builder: (context) => MyApp())),
       );
     } else {
       Timer(
@@ -41,18 +41,31 @@ class _splashscreenState extends State<splashscreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
-        child: Container(
-          
-          height: 200,
-          width: 200,
-          decoration: BoxDecoration(
-            color: Colors.blue,
-            borderRadius: BorderRadius.circular(100),
-            image: const DecorationImage(
-              image: AssetImage("img/clipart.png"),
-              fit: BoxFit.cover,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              height: 200,
+              width: 200,
+              decoration: BoxDecoration(
+                color: Colors.blue,
+                borderRadius: BorderRadius.circular(100),
+                image: const DecorationImage(
+                  image: AssetImage("img/clipart.png"),
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
-          ),
+            const SizedBox(height: 20),
+            const Text(
+              'Loading...',
+              style: TextStyle(
+                fontSize: 24.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey,
+              ),
+            ),
+          ],
         ),
       ),
     );

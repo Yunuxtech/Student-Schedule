@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.firebase_one">
+    package="com.example.student_schedule">
    <application
-        android:label="firebase_one"
+        android:label="student_schedule"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

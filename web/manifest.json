@@ -1,6 +1,6 @@
 {
-    "name": "firebase_one",
-    "short_name": "firebase_one",
+    "name": "student_schedule",
+    "short_name": "student_schedule",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

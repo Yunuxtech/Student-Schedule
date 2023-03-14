@@ -1,34 +1,31 @@
-import 'package:Student_schedule/Toast.dart';
 import 'package:flutter/material.dart';
 
-
-
-class NotesPage extends StatefulWidget {
+class AssignmentsPage extends StatefulWidget {
   @override
-  _NotesPageState createState() => _NotesPageState();
+  _AssignmentPageState createState() => _AssignmentPageState();
 }
 
-class _NotesPageState extends State<NotesPage> {
-  final _titleController = TextEditingController();
-
+class _AssignmentPageState extends State<AssignmentsPage> {
+ final _titleController = TextEditingController();
+  final _descriptionController = TextEditingController();
+  final _dateController = TextEditingController();
   final _messageController = TextEditingController();
 
   @override
   void dispose() {
     _titleController.dispose();
-
+    _descriptionController.dispose();
+    _dateController.dispose();
     _messageController.dispose();
     super.dispose();
   }
 
   void _showDialog() {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return FractionallySizedBox(
-        heightFactor: 1.0,
-        child: AlertDialog(
-          title: Text('Add a Note'),
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Add Assignment'),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
@@ -38,12 +35,20 @@ class _NotesPageState extends State<NotesPage> {
                     hintText: 'Course Code',
                   ),
                 ),
+                
+                SizedBox(height: 10),
+                TextField(
+                  controller: _dateController,
+                  decoration: InputDecoration(
+                    hintText: 'Date/Time',
+                  ),
+                ),
                 SizedBox(height: 10),
                 TextField(
                   controller: _messageController,
                   maxLines: 4,
                   decoration: InputDecoration(
-                    hintText: 'Note',
+                    hintText: 'Given Assignment',
                   ),
                 ),
               ],
@@ -61,23 +66,23 @@ class _NotesPageState extends State<NotesPage> {
               onPressed: () {
                 // Perform the desired action here
                 String title = _titleController.text;
+                String description = _descriptionController.text;
+                String date = _dateController.text;
                 String message = _messageController.text;
                 // You can now use the values of the text fields as needed
-                toastmessage("Note Added");
                 Navigator.of(context).pop();
               },
             ),
           ],
-        ),
-      );
-    },
-  );
-}
-
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      
       body: Container(),
       floatingActionButton: FloatingActionButton(
         onPressed: _showDialog,

@@ -1,18 +1,19 @@
-import 'package:Student_schedule/drawer/privacy_policy.dart';
-import 'package:Student_schedule/drawer/settings.dart';
-// import 'package:firebase_one/drawer/privacy_policy.dart';
-// import 'package:firebase_one/drawer/send_feedback.dart';
-// import 'package:firebase_one/drawer/settings.dart';
+import 'package:Student_schedule/drawer/about.dart';
+import 'package:Student_schedule/drawer/exams.dart';
+import 'package:Student_schedule/drawer/tests.dart';
+// import 'package:student_schedule/drawer/privacy_policy.dart';
+// import 'package:student_schedule/drawer/send_feedback.dart';
+// import 'package:student_schedule/drawer/settings.dart';
 import 'package:flutter/material.dart';
 
 
 import '../loginscreen.dart';
-import 'contacts.dart';
+import 'notes.dart';
 import 'dashboard.dart';
-import 'events.dart';
+import 'assignment.dart';
 import 'my_drawer_header.dart';
 import 'notes.dart';
-import 'notifications.dart';
+import 'lectures.dart';
 
 void main() {
   runApp(MyApp());
@@ -41,18 +42,18 @@ class _HomePageState extends State<HomePage> {
     var container;
     if (currentPage == DrawerSections.dashboard) {
       container = DashboardPage();
-    } else if (currentPage == DrawerSections.contacts) {
-      container = ContactsPage();
-    } else if (currentPage == DrawerSections.events) {
-      container = EventsPage();
+    } else if (currentPage == DrawerSections.lectures) {
+      container = LecturesPage();
+    } else if (currentPage == DrawerSections.assignments) {
+      container = AssignmentsPage();
     } else if (currentPage == DrawerSections.notes) {
       container = NotesPage();
-    } else if (currentPage == DrawerSections.settings) {
-      container = SettingsPage();
-    } else if (currentPage == DrawerSections.notifications) {
-      container = NotificationsPage();
-    } else if (currentPage == DrawerSections.privacy_policy) {
-      container = PrivacyPolicyPage();
+    } else if (currentPage == DrawerSections.tests) {
+      container = TestsPage();
+    } else if (currentPage == DrawerSections.exams) {
+      container = ExamsPage();
+    } else if (currentPage == DrawerSections.about) {
+      container = AboutPage();
     } else if (currentPage == DrawerSections.loginscreen) {
        Navigator.push(
       context,
@@ -96,19 +97,19 @@ class _HomePageState extends State<HomePage> {
           menuItem(1, "Dashboard", Icons.dashboard_outlined,
               currentPage == DrawerSections.dashboard ? true : false),
           menuItem(2, "Lectures", Icons.schedule,
-              currentPage == DrawerSections.contacts ? true : false),
+              currentPage == DrawerSections.lectures ? true : false),
           menuItem(3, "Assignment", Icons.assignment,
-              currentPage == DrawerSections.events ? true : false),
+              currentPage == DrawerSections.assignments ? true : false),
           menuItem(4, "Notes", Icons.notes,
               currentPage == DrawerSections.notes ? true : false),
           Divider(),
           menuItem(5, "Test Schedules", Icons.schedule,
-              currentPage == DrawerSections.settings ? true : false),
+              currentPage == DrawerSections.tests ? true : false),
           menuItem(6, "Exams Schedules", Icons.schedule,
-              currentPage == DrawerSections.notifications ? true : false),
+              currentPage == DrawerSections.exams ? true : false),
           Divider(),
           menuItem(7, "About", Icons.question_mark_rounded,
-              currentPage == DrawerSections.privacy_policy ? true : false),
+              currentPage == DrawerSections.about ? true : false),
           menuItem(8, "Logout", Icons.logout,
               currentPage == DrawerSections.loginscreen ? true : false),
         ],
@@ -126,17 +127,17 @@ class _HomePageState extends State<HomePage> {
             if (id == 1) {
               currentPage = DrawerSections.dashboard;
             } else if (id == 2) {
-              currentPage = DrawerSections.contacts;
+              currentPage = DrawerSections.lectures;
             } else if (id == 3) {
-              currentPage = DrawerSections.events;
+              currentPage = DrawerSections.assignments;
             } else if (id == 4) {
               currentPage = DrawerSections.notes;
             } else if (id == 5) {
-              currentPage = DrawerSections.settings;
+              currentPage = DrawerSections.tests;
             } else if (id == 6) {
-              currentPage = DrawerSections.notifications;
+              currentPage = DrawerSections.exams;
             } else if (id == 7) {
-              currentPage = DrawerSections.privacy_policy;
+              currentPage = DrawerSections.about;
             } else if (id == 8) {
               currentPage = DrawerSections.loginscreen;
             }
@@ -173,12 +174,11 @@ class _HomePageState extends State<HomePage> {
 
 enum DrawerSections {
   dashboard,
-  contacts,
-  events,
+  lectures,
+  assignments,
   notes,
-  settings,
-  notifications,
-  privacy_policy,
-  send_feedback,
+  tests,
+  exams,
+  about,
   loginscreen,
 }
