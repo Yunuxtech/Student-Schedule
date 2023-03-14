@@ -56,13 +56,13 @@ class _splashscreenState extends State<splashscreen> {
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 50),
             const Text(
               'Loading...',
               style: TextStyle(
                 fontSize: 24.0,
                 fontWeight: FontWeight.bold,
-                color: Colors.grey,
+                color: Colors.blue,
               ),
             ),
           ],
