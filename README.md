@@ -1,1 +1,2 @@
 
+Student Schedule planner project
