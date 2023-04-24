@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "973304248836",
+    "project_id": "student-activities-plann-febe4",
+    "storage_bucket": "student-activities-plann-febe4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:973304248836:android:1b5fcde7a6ad42eb2e1351",
+        "android_client_info": {
+          "package_name": "com.example.student_schedule"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "973304248836-vllc0m8i2rcv85arcirpcn0d8us1fbal.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAbTP7mUvKoiRWnNQFuiIUv2uGKE2jV9UI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "973304248836-vllc0m8i2rcv85arcirpcn0d8us1fbal.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

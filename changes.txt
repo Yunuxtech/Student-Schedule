@@ -1,0 +1,5 @@
+FirebaseUser changed to User
+
+AuthResult changed to UserCredential
+
+GoogleAuthProvider.getCredential() changed to GoogleAuthProvider.credential()
