@@ -48,18 +48,39 @@ class _signUpScreenState extends State<signUpScreen> {
       
     }
 
-    Widget _buildName() {
+    Widget _buildFirst() {
       return TextFormField(
           decoration: const InputDecoration(
-              labelText: "FullName",
-              hintText: "Your Name",
+              labelText: "First Name",
+              hintText: "First Name",
               fillColor: Colors.red),
           style: const TextStyle(
             fontSize: 12,
           ),
           validator: (value) {
             if (value!.isEmpty) {
-              return 'Please Enter your Fullname';
+              return 'Please Enter your First Name';
+            }
+            return null;
+          },
+          onSaved: (value) {
+            _fullname = value!;
+          },
+        
+      );
+    }
+    Widget _buildSurname() {
+      return TextFormField(
+          decoration: const InputDecoration(
+              labelText: "Surname",
+              hintText: "Surname",
+              fillColor: Colors.red),
+          style: const TextStyle(
+            fontSize: 12,
+          ),
+          validator: (value) {
+            if (value!.isEmpty) {
+              return 'Please Enter your Surname';
             }
             return null;
           },
@@ -144,7 +165,7 @@ class _signUpScreenState extends State<signUpScreen> {
                       padding: const EdgeInsets.all(12),
                       child: Container(
                         width: MediaQuery.of(context).size.height * 0.4,
-                        height: MediaQuery.of(context).size.height * 0.7,
+                        height: 540,
                         decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(20),
@@ -162,7 +183,7 @@ class _signUpScreenState extends State<signUpScreen> {
 
                             children: [
                               const SizedBox(
-                                height: 39,
+                                height: 5,
                               ),
                               const Text(
                                 "SIGN UP",
@@ -178,8 +199,9 @@ class _signUpScreenState extends State<signUpScreen> {
                                   child: Column(
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: <Widget>[
-                                        _buildName(),
                                         _buildRegNo(),
+                                        _buildFirst(),
+                                        _buildSurname(),
                                         _buildemail(),
                                         _buildPassword(),
                                         
@@ -188,7 +210,7 @@ class _signUpScreenState extends State<signUpScreen> {
                               
             
                               const SizedBox(
-                                height: 30,
+                                height: 40,
                               ),
             
                               //  added button
