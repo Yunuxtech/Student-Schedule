@@ -24,21 +24,37 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Row(
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top:25.0),
+            child: SizedBox(
+              height: 80,
+              child: Card(
+                child: Expanded(
+                  child: Center(
+                    child: ClockWidget(dateTime: _dateTime),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+  child: Card(
+    elevation: 30,
+    child: ListView.builder(
+      itemCount: (_cards.length / 2).ceil(),
+      itemBuilder: (context, index) {
+        final screenWidth = MediaQuery.of(context).size.width;
+        final cardWidth = (screenWidth - 30.0) / 2;
+        final screenHeight = MediaQuery.of(context).size.height;
+        final cardHeight = screenHeight;
+        return Row(
           children: [
-            ClockWidget(dateTime: _dateTime),
-            SizedBox(width: 16),
-            Text('ListView Cards Example'),
-          ],
-        ),
-      ),
-      body: ListView.builder(
-        itemCount: _cards.length ~/ 2,
-        itemBuilder: (context, index) {
-          return Row(
-            children: [
-              Expanded(
+            Expanded(
+              child: SizedBox(
+                width: cardWidth,
+                height: 160,
                 child: Card(
                   child: Column(
                     children: [
@@ -60,8 +76,12 @@ class _DashboardPageState extends State<DashboardPage> {
                   ),
                 ),
               ),
-              SizedBox(width: 10.0),
-              Expanded(
+            ),
+            SizedBox(width: 10.0),
+            Expanded(
+              child: SizedBox(
+                width: cardWidth,
+                height: 160,
                 child: Card(
                   child: Column(
                     children: [
@@ -83,13 +103,20 @@ class _DashboardPageState extends State<DashboardPage> {
                   ),
                 ),
               ),
-            ],
-          );
-        },
+            ),
+          ],
+        );
+      },
+    ),
+  ),
+),
+
+        ],
       ),
     );
   }
 }
+
 
 class ClockWidget extends StatelessWidget {
   const ClockWidget({required this.dateTime});
@@ -112,4 +139,4 @@ class ClockWidget extends StatelessWidget {
   }
 }
 
-final List<Map<String, String>> _cards = [  {    'header': 'Card 1',    'text': 'This is the text for card 1',  },  {    'header': 'Card 2',    'text': 'This is the text for card 2',  },  {    'header': 'Card 3',    'text': 'This is the text for card 3',  },  {    'header': 'Card 4',    'text': 'This is the text for card 4',  },];
+final List<Map<String, String>> _cards = [  {    'header': 'Lectures',    'text': '#1',  },  {    'header': 'Assignment',    'text': '#2',  },  {    'header': 'Notes',    'text': '#3',  },  {    'header': 'Tests',    'text': '#4',  }, {    'header': 'Exams',    'text': '#5',  }, {    'header': 'Total',    'text': '#6',  }, ];
