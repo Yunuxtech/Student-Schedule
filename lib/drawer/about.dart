@@ -10,17 +10,7 @@ class _AboutPageState extends State<AboutPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Center(
-        child: Checkbox(
-          value: isChecked1,
-          onChanged: (bool? value) {
-            setState(() {
-              isChecked1 = value!;
-              print(isChecked1);
-            });
-          },
-        ),
-      ),
+      
     );
   }
 }
