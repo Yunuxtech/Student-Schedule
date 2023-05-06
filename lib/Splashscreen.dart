@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:Student_schedule/drawer/dashboard.dart';
 import 'package:Student_schedule/drawer/drawer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:lottie/lottie.dart';
@@ -20,14 +21,17 @@ class _splashscreenState extends State<splashscreen> {
     super.initState();
 
     final user = FirebaseAuth.instance.currentUser;
+    // final user = null;
 
     if (user != null) {
+      print("User is not null");
       Timer(
         const Duration(seconds: 5),
         () => Navigator.push(
             context, MaterialPageRoute(builder: (context) => MyApp())),
       );
     } else {
+      print("user is null");
       Timer(
         const Duration(seconds: 5),
         () => Navigator.push(
