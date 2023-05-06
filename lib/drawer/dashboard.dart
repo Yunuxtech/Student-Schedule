@@ -69,11 +69,11 @@ class _DashboardPageState extends State<DashboardPage> {
                                     // height: 50.0,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(35.0),
-                                      color: Colors.white,
+                                      // color: Colors.white,
                                     ),
                                     child: Center(
                                       child: Icon(
-                                        Icons.account_circle,
+                                        Icons.schedule,
                                         color: Colors.blue,
                                         size: 50.0,
                                       ),
@@ -126,21 +126,55 @@ class _DashboardPageState extends State<DashboardPage> {
                             elevation: 30,
                             color: Colors.white70,
                             child: Padding(
-                              padding: const EdgeInsets.only(top: 50.0),
+                              padding: const EdgeInsets.only(top: 0),
                               child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    _cards[index * 2 + 1]['header']!,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18.0,
+                                  Container(
+                                    // width: 70.0,
+                                    // height: 50.0,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(35.0),
+                                      // color: Colors.white,
+                                    ),
+                                    child: Center(
+                                      child: Icon(
+                                        Icons.schedule,
+                                        color: Colors.blue,
+                                        size: 50.0,
+                                      ),
                                     ),
                                   ),
-                                  SizedBox(height: 10.0),
-                                  Text(
-                                    _cards[index * 2 + 1]['text']!,
-                                    style: TextStyle(
-                                      fontSize: 16.0,
+                                  SizedBox(width: 10.0,
+                                  height: 15,),
+                                  Expanded(
+                                    child: Container(
+                                      height: 120,
+                                      width: MediaQuery.of(context).size.width,
+                                      padding: EdgeInsets.all(10.0),
+                                      color: Colors.blue,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            _cards[index * 2 + 1]['header']!,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 18.0,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                          SizedBox(height: 10.0),
+                                          Text(
+                                            _cards[index * 2 + 1]['text']!,
+                                            style: TextStyle(
+                                              fontSize: 16.0,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -186,22 +220,27 @@ final List<Map<String, String>> _cards = [
   {
     'header': 'Lectures',
     'text': '#1',
+    'icon': 'Icons.schedule'
   },
   {
     'header': 'Assignments',
     'text': '#2',
+    'icon': 'Icons.assignment'
   },
   {
     'header': 'Notes',
     'text': '#3',
+    'icon': 'Icons.notes'
   },
   {
     'header': 'Tests',
     'text': '#4',
+    'icon': 'Icons.schedule'
   },
   {
     'header': 'Exams',
     'text': '#5',
+    'icon': 'Icons.schedule'
   },
   {
     'header': 'Total',

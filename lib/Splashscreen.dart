@@ -21,6 +21,7 @@ class _splashscreenState extends State<splashscreen> {
     super.initState();
 
     final user = FirebaseAuth.instance.currentUser;
+    // final user = null;
 
     if (user != null) {
       print("User is not null");

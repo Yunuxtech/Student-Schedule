@@ -9,6 +9,7 @@ import 'Toast.dart';
 import 'Homescreen.dart';
 import 'package:flutter/material.dart';
 
+import 'drawer/drawer.dart';
 import 'loginscreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -230,50 +231,53 @@ class _signUpScreenState extends State<signUpScreen> {
                                         "regNo": _regno,
                                         "email": _email,
                                       };
+                                      try {
+                                        UserCredential creds =
+                                            await FirebaseAuth.instance
+                                                .createUserWithEmailAndPassword(
+                                                    email: _email,
+                                                    password: _password);
 
-                                      UserCredential creds = await FirebaseAuth
-                                          .instance
-                                          .createUserWithEmailAndPassword(
-                                              email: _email,
-                                              password: _password);
-
-                                      if (creds.user == null) {
-                                        AnimatedSnackBar.rectangle(
-                                          'Error',
-                                          'Registration Error',
-                                          type: AnimatedSnackBarType.error,
-                                          brightness: Brightness.light,
-                                          mobileSnackBarPosition:
-                                              MobileSnackBarPosition.bottom,
-                                        ).show(
-                                          context,
-                                        );
+                                        if (creds.user == null) {
+                                          AnimatedSnackBar.rectangle(
+                                            'Error',
+                                            'Registration Error',
+                                            type: AnimatedSnackBarType.error,
+                                            brightness: Brightness.light,
+                                            mobileSnackBarPosition:
+                                                MobileSnackBarPosition.bottom,
+                                          ).show(
+                                            context,
+                                          );
+                                        }
+                                        db
+                                            .collection("students")
+                                            .add(user)
+                                            .then((DocumentReference doc) => {
+                                                  print(
+                                                      'DocumentSnapshot added with ID: ${doc.id}')
+                                                })
+                                            .then((value) =>
+                                                AnimatedSnackBar.rectangle(
+                                                  'Success',
+                                                  'Registration Successful',
+                                                  type: AnimatedSnackBarType
+                                                      .success,
+                                                  brightness: Brightness.light,
+                                                  mobileSnackBarPosition:
+                                                      MobileSnackBarPosition
+                                                          .bottom,
+                                                ).show(
+                                                  context,
+                                                ))
+                                            .then((value) =>
+                                                Navigator.of(context).push(
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            MyApp())));
+                                      } catch (e) {
+                                        print("Having this error");
                                       }
-
-                                      db
-                                          .collection("students")
-                                          .add(user)
-                                          .then((DocumentReference doc) => {
-                                                print(
-                                                    'DocumentSnapshot added with ID: ${doc.id}')
-                                              })
-                                          .then((value) =>
-                                              AnimatedSnackBar.rectangle(
-                                                'Success',
-                                                'Registration Successful',
-                                                type: AnimatedSnackBarType
-                                                    .success,
-                                                brightness: Brightness.light,
-                                                mobileSnackBarPosition:
-                                                    MobileSnackBarPosition
-                                                        .bottom,
-                                              ).show(
-                                                context,
-                                              ))
-                                          .then((value) => Navigator.of(context)
-                                              .push(MaterialPageRoute(
-                                                  builder: (context) =>
-                                                       DashboardPage())));
                                     }
                                   },
                                   style: ButtonStyle(
