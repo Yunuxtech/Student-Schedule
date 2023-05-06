@@ -49,7 +49,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   final screenWidth = MediaQuery.of(context).size.width;
                   final cardWidth = (screenWidth - 30.0) / 2;
                   final screenHeight = MediaQuery.of(context).size.height;
-                  final cardHeight = screenHeight;
+                  // final cardHeight = screenHeight;
                   return Row(
                     children: [
                       Expanded(
@@ -73,14 +73,16 @@ class _DashboardPageState extends State<DashboardPage> {
                                     ),
                                     child: Center(
                                       child: Icon(
-                                        Icons.account_circle,
+                                        _cards[index * 2]['icon'],
                                         color: Colors.blue,
                                         size: 50.0,
                                       ),
                                     ),
                                   ),
-                                  SizedBox(width: 10.0,
-                                  height: 15,),
+                                  SizedBox(
+                                    width: 10.0,
+                                    height: 15,
+                                  ),
                                   Expanded(
                                     child: Container(
                                       height: 120,
@@ -182,29 +184,35 @@ class ClockWidget extends StatelessWidget {
   }
 }
 
-final List<Map<String, String>> _cards = [
+final List<Map<String, dynamic>> _cards = [
   {
     'header': 'Lectures',
     'text': '#1',
+    'icon': Icons.library_books,
   },
   {
     'header': 'Assignments',
     'text': '#2',
+    'icon': Icons.assignment,
   },
   {
     'header': 'Notes',
     'text': '#3',
+    'icon': Icons.note,
   },
   {
     'header': 'Tests',
     'text': '#4',
+    'icon': Icons.assignment_turned_in,
   },
   {
     'header': 'Exams',
     'text': '#5',
+    'icon': Icons.school,
   },
   {
     'header': 'Total',
     'text': '#6',
+    'icon': Icons.dashboard,
   },
 ];
