@@ -10,16 +10,52 @@ class _AboutPageState extends State<AboutPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Center(
-        child: Checkbox(
-          value: isChecked1,
-          onChanged: (bool? value) {
-            setState(() {
-              isChecked1 = value!;
-              print(isChecked1);
-            });
-          },
-        ),
+      
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Center(
+            child: Card(
+              elevation: 10,
+              shadowColor: Colors.blue.withOpacity(1),
+              child: Container(
+                height: 400,
+                width: 300,
+                
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(bottom: 40),
+                        height: 70,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              image: DecorationImage(
+                image: AssetImage('img/clipart.png'),
+              ),
+            ),
+                      ),
+                      Text(
+                        'App Name: Student Activities Planner',
+                        style: TextStyle(fontSize: 15, fontStyle: FontStyle.italic, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        'App Version: v1.0',
+                        style: TextStyle(fontSize: 15, fontStyle: FontStyle.italic, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        'Developed By: Yunus Isah',
+                        style: TextStyle(fontSize: 15, fontStyle: FontStyle.italic, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          
+        ],
       ),
     );
   }

@@ -49,7 +49,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   final screenWidth = MediaQuery.of(context).size.width;
                   final cardWidth = (screenWidth - 30.0) / 2;
                   final screenHeight = MediaQuery.of(context).size.height;
-                  final cardHeight = screenHeight;
+                  // final cardHeight = screenHeight;
                   return Row(
                     children: [
                       Expanded(
@@ -57,6 +57,7 @@ class _DashboardPageState extends State<DashboardPage> {
                           width: cardWidth,
                           height: 160,
                           child: Card(
+                            shadowColor: Colors.blue.withOpacity(1),
                             elevation: 30,
                             color: Colors.white70,
                             child: Padding(
@@ -73,14 +74,16 @@ class _DashboardPageState extends State<DashboardPage> {
                                     ),
                                     child: Center(
                                       child: Icon(
-                                        Icons.schedule,
+                                        Icons.account_circle,
                                         color: Colors.blue,
                                         size: 50.0,
                                       ),
                                     ),
                                   ),
-                                  SizedBox(width: 10.0,
-                                  height: 15,),
+                                  SizedBox(
+                                    width: 10.0,
+                                    height: 15,
+                                  ),
                                   Expanded(
                                     child: Container(
                                       height: 120,
@@ -124,57 +127,24 @@ class _DashboardPageState extends State<DashboardPage> {
                           height: 160,
                           child: Card(
                             elevation: 30,
+                            shadowColor: Colors.blue.withOpacity(1),
                             color: Colors.white70,
                             child: Padding(
                               padding: const EdgeInsets.only(top: 0),
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Container(
-                                    // width: 70.0,
-                                    // height: 50.0,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(35.0),
-                                      // color: Colors.white,
-                                    ),
-                                    child: Center(
-                                      child: Icon(
-                                        Icons.schedule,
-                                        color: Colors.blue,
-                                        size: 50.0,
-                                      ),
+                                  Text(
+                                    _cards[index * 2 + 1]['header']!,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18.0,
                                     ),
                                   ),
-                                  SizedBox(width: 10.0,
-                                  height: 15,),
-                                  Expanded(
-                                    child: Container(
-                                      height: 120,
-                                      width: MediaQuery.of(context).size.width,
-                                      padding: EdgeInsets.all(10.0),
-                                      color: Colors.blue,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            _cards[index * 2 + 1]['header']!,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18.0,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                          SizedBox(height: 10.0),
-                                          Text(
-                                            _cards[index * 2 + 1]['text']!,
-                                            style: TextStyle(
-                                              fontSize: 16.0,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                                  SizedBox(height: 10.0),
+                                  Text(
+                                    _cards[index * 2 + 1]['text']!,
+                                    style: TextStyle(
+                                      fontSize: 16.0,
                                     ),
                                   ),
                                 ],
@@ -216,34 +186,34 @@ class ClockWidget extends StatelessWidget {
   }
 }
 
-final List<Map<String, String>> _cards = [
+final List<Map<String, dynamic>> _cards = [
   {
     'header': 'Lectures',
     'text': '#1',
-    'icon': 'Icons.schedule'
+    'icon': Icons.library_books,
   },
   {
     'header': 'Assignments',
     'text': '#2',
-    'icon': 'Icons.assignment'
   },
   {
     'header': 'Notes',
     'text': '#3',
-    'icon': 'Icons.notes'
+    'icon': Icons.note,
   },
   {
     'header': 'Tests',
     'text': '#4',
-    'icon': 'Icons.schedule'
+    'icon': Icons.assignment_turned_in,
   },
   {
     'header': 'Exams',
     'text': '#5',
-    'icon': 'Icons.schedule'
+    'icon': Icons.school,
   },
   {
     'header': 'Total',
     'text': '#6',
+    'icon': Icons.dashboard,
   },
 ];
