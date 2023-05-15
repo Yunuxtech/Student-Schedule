@@ -1,5 +1,7 @@
 import 'dart:ui';
 import 'package:Student_schedule/drawer/dashboard.dart';
+import 'package:Student_schedule/services/auth.dart';
+import 'package:Student_schedule/services/database.dart';
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,12 +11,15 @@ import 'Toast.dart';
 import 'Homescreen.dart';
 import 'package:flutter/material.dart';
 
-import 'drawer/drawer.dart';
+import 'drawer/home.dart';
 import 'loginscreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class signUpScreen extends StatefulWidget {
-  const signUpScreen({super.key});
+  final FirebaseAuth auth;
+  final FirebaseFirestore firestore;
+
+  const signUpScreen(this.auth, this.firestore);
 
   @override
   State<signUpScreen> createState() => _signUpScreenState();
@@ -36,6 +41,7 @@ class _signUpScreenState extends State<signUpScreen> {
 // add form
   Widget _buildemail() {
     return TextFormField(
+      controller: _emailController,
       decoration: const InputDecoration(
           labelText: "Email",
           hintText: "youremail@gmail.com",
@@ -57,6 +63,7 @@ class _signUpScreenState extends State<signUpScreen> {
 
   Widget _buildFirst() {
     return TextFormField(
+      controller: _firstNameController,
       decoration: const InputDecoration(
           labelText: "First Name",
           hintText: "First Name",
@@ -78,6 +85,7 @@ class _signUpScreenState extends State<signUpScreen> {
 
   Widget _buildSurname() {
     return TextFormField(
+      controller: _surnameController,
       decoration: const InputDecoration(
           labelText: "Surname", hintText: "Surname", fillColor: Colors.red),
       style: const TextStyle(
@@ -98,6 +106,7 @@ class _signUpScreenState extends State<signUpScreen> {
   Widget _buildPassword() {
     return TextFormField(
       obscureText: false,
+      controller: _passwordController,
       decoration:
           const InputDecoration(labelText: "Password", hintText: "********"),
       style: const TextStyle(fontSize: 12),
@@ -115,6 +124,7 @@ class _signUpScreenState extends State<signUpScreen> {
 
   Widget _buildRegNo() {
     return TextFormField(
+      controller: _regNoController,
       decoration: const InputDecoration(
           labelText: "Registraion No.", hintText: "CST/17/IFT/...."),
       style: const TextStyle(fontSize: 12),
@@ -128,6 +138,22 @@ class _signUpScreenState extends State<signUpScreen> {
         _regno = value!;
       },
     );
+  }
+
+  TextEditingController _regNoController = TextEditingController();
+  TextEditingController _firstNameController = TextEditingController();
+  TextEditingController _surnameController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _regNoController.dispose();
+    _firstNameController.dispose();
+    _surnameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -225,58 +251,65 @@ class _signUpScreenState extends State<signUpScreen> {
                                       _formkey.currentState!.save();
 
                                       // create user on firebase and data on firstore
-                                      final user = <String, dynamic>{
-                                        "firstName": _firstName,
-                                        "lastName": _lastName,
-                                        "regNo": _regno,
-                                        "email": _email,
-                                      };
+
                                       try {
                                         UserCredential creds =
-                                            await FirebaseAuth.instance
-                                                .createUserWithEmailAndPassword(
-                                                    email: _email,
-                                                    password: _password);
+                                            await Auth(widget.auth)
+                                                .createAccount(
+                                                    _email, _password);
 
-                                        if (creds.user == null) {
-                                          AnimatedSnackBar.rectangle(
-                                            'Error',
-                                            'Registration Error',
-                                            type: AnimatedSnackBarType.error,
-                                            brightness: Brightness.light,
-                                            mobileSnackBarPosition:
-                                                MobileSnackBarPosition.bottom,
-                                          ).show(
-                                            context,
-                                          );
+                                        if (creds.user != null) {
+                                          final user = <String, dynamic>{
+                                            "firstName": _firstName,
+                                            "lastName": _lastName,
+                                            "regNo": _regno,
+                                            "email": _email,
+                                            "uid": creds.user!.uid,
+                                          };
+                                          DocumentReference value =
+                                              await Database(widget.firestore)
+                                                  .addStudent(user, "students");
+                                          if (value.id != null) {
+                                            print("Success");
+                                            AnimatedSnackBar.rectangle(
+                                              'Success',
+                                              'Sign up Successful',
+                                              type:
+                                                  AnimatedSnackBarType.success,
+                                              brightness: Brightness.light,
+                                              mobileSnackBarPosition:
+                                                  MobileSnackBarPosition.bottom,
+                                            ).show(
+                                              context,
+                                            );
+
+                                            Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        HomePage(widget.auth,
+                                                            widget.firestore)));
+                                          }
                                         }
-                                        db
-                                            .collection("students")
-                                            .add(user)
-                                            .then((DocumentReference doc) => {
-                                                  print(
-                                                      'DocumentSnapshot added with ID: ${doc.id}')
-                                                })
-                                            .then((value) =>
-                                                AnimatedSnackBar.rectangle(
-                                                  'Success',
-                                                  'Registration Successful',
-                                                  type: AnimatedSnackBarType
-                                                      .success,
-                                                  brightness: Brightness.light,
-                                                  mobileSnackBarPosition:
-                                                      MobileSnackBarPosition
-                                                          .bottom,
-                                                ).show(
-                                                  context,
-                                                ))
-                                            .then((value) =>
-                                                Navigator.of(context).push(
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            MyApp())));
                                       } catch (e) {
-                                        print("Having this error");
+                                        print("Encountered an error: $e");
+                                        AnimatedSnackBar.rectangle(
+                                          'Error',
+                                          '$e',
+                                          type: AnimatedSnackBarType.info,
+                                          brightness: Brightness.light,
+                                          mobileSnackBarPosition:
+                                              MobileSnackBarPosition
+                                                  .bottom, // Position of snackbar on mobile devices
+                                          // desktopSnackBarPosition: DesktopSnackBarPosition.topRight,
+                                        ).show(
+                                          context,
+                                        );
+
+                                        _regNoController.clear();
+                                        _firstNameController.clear();
+                                        _surnameController.clear();
+                                        _emailController.clear();
+                                        _passwordController.clear();
                                       }
                                     }
                                   },
@@ -314,7 +347,8 @@ class _signUpScreenState extends State<signUpScreen> {
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      const loginscreen()));
+                                                      loginscreen(widget.auth,
+                                                          widget.firestore)));
                                         },
                                         child: const Text(
                                           "Login",

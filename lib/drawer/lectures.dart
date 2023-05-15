@@ -1,8 +1,18 @@
 import 'package:animated_snack_bar/animated_snack_bar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+import '../alarmFunctions/scheduleRepeatingAlarm.dart';
+import '../services/database.dart';
 
 class LecturesPage extends StatefulWidget {
+  final FirebaseAuth auth;
+  final FirebaseFirestore firestore;
+  LecturesPage(this.auth, this.firestore);
+
+  // get auth => null;
+
   @override
   _LecturesPageState createState() => _LecturesPageState();
 }
@@ -11,7 +21,18 @@ class _LecturesPageState extends State<LecturesPage> {
   final _titleController = TextEditingController();
   final _venueController = TextEditingController();
   final _timeController = TextEditingController();
+  String? _selectedDay;
   List<Card> _lecturecard = [];
+
+  final NotificationService notificationService = NotificationService();
+
+  @override
+  void initState() {
+    super.initState();
+    // Get the user ID and save it to a variable
+    final String userId = widget.auth.currentUser!.uid;
+    print('User ID: $userId');
+  }
 
   @override
   void dispose() {
@@ -36,156 +57,82 @@ class _LecturesPageState extends State<LecturesPage> {
   }
 
   void _showDialog() {
-    List<String> _days = [];
-    bool isChecked1 = false;
-    bool isChecked2 = false;
-    bool isChecked3 = false;
-    bool isChecked4 = false;
-    bool isChecked5 = false;
-    bool isChecked6 = false;
-    bool isChecked7 = false;
-
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Add Lectures'),
           content: SingleChildScrollView(
-            child: ListBody(children: <Widget>[
-              TextField(
-                controller: _titleController,
-                decoration: InputDecoration(
-                  hintText: 'Course Code',
+            child: ListBody(
+              children: <Widget>[
+                TextField(
+                  controller: _titleController,
+                  decoration: InputDecoration(
+                    hintText: 'Course Code',
+                  ),
                 ),
-              ),
-              SizedBox(height: 10),
-              TextField(
-                controller: _venueController,
-                decoration: InputDecoration(
-                  hintText: 'Venue',
+                SizedBox(height: 10),
+                TextField(
+                  controller: _venueController,
+                  decoration: InputDecoration(
+                    hintText: 'Venue',
+                  ),
                 ),
-              ),
-              SizedBox(height: 10),
-              TextFormField(
-                controller: _timeController,
-                onTap: () async {
-                  FocusScope.of(context).requestFocus(new FocusNode());
-                  await _selectTime(context);
-                },
-                decoration: InputDecoration(
-                  hintText: 'Time',
+                SizedBox(height: 10),
+                TextFormField(
+                  controller: _timeController,
+                  onTap: () async {
+                    FocusScope.of(context).requestFocus(new FocusNode());
+                    await _selectTime(context);
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Time',
+                  ),
                 ),
-              ),
-              SizedBox(height: 10),
-              Text("Day(s)"),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    Checkbox(
-                      value: isChecked1,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          isChecked1 = value!;
-                          print(isChecked1);
-                        });
-                        if (value!) {
-                          _days.add('S');
-                        } else {
-                          _days.remove('S');
-                        }
-                       
-                      },
+                SizedBox(height: 10),
+                DropdownButtonFormField<String>(
+                  value: _selectedDay,
+                  onChanged: (newValue) {
+                    setState(() {
+                      _selectedDay = newValue;
+                    });
+                  },
+                  items: [
+                    DropdownMenuItem<String>(
+                      value: 'Monday',
+                      child: Text('Monday'),
                     ),
-                    Text('S'),
-                    Checkbox(
-                      value: isChecked2,
-                      onChanged: (value) {
-                        setState(() {
-                          isChecked2 = value!;
-                        });
-                        if (value!) {
-                          _days.add('M');
-                        } else {
-                          _days.remove('M');
-                        }
-                      },
+                    DropdownMenuItem<String>(
+                      value: 'Tuesday',
+                      child: Text('Tuesday'),
                     ),
-                    Text('M'),
-                    Checkbox(
-                      value: isChecked3,
-                      onChanged: (value) {
-                        setState(() {
-                          isChecked3 = value!;
-                        });
-                        if (value!) {
-                          _days.add('T');
-                        } else {
-                          _days.remove('T');
-                        }
-                      },
+                    DropdownMenuItem<String>(
+                      value: 'Wednesday',
+                      child: Text('Wednesday'),
                     ),
-                    Text('T'),
-                    Checkbox(
-                      value: isChecked4,
-                      onChanged: (value) {
-                        setState(() {
-                          isChecked4 = value!;
-                        });
-                        if (value!) {
-                          _days.add('W');
-                        } else {
-                          _days.remove('W');
-                        }
-                      },
+                    DropdownMenuItem<String>(
+                      value: 'Thursday',
+                      child: Text('Thursday'),
                     ),
-                    Text('W'),
-                    Checkbox(
-                      value: isChecked5,
-                      onChanged: (value) {
-                        setState(() {
-                          isChecked5 = value!;
-                        });
-                        if (value!) {
-                          _days.add('TH');
-                        } else {
-                          _days.remove('TH');
-                        }
-                      },
+                    DropdownMenuItem<String>(
+                      value: 'Friday',
+                      child: Text('Friday'),
                     ),
-                    Text('TH'),
-                    Checkbox(
-                      value: isChecked6,
-                      onChanged: (value) {
-                        setState(() {
-                          isChecked6 = value!;
-                        });
-                        if (value!) {
-                          _days.add('F');
-                        } else {
-                          _days.remove('F');
-                        }
-                      },
+                    DropdownMenuItem<String>(
+                      value: 'Saturday',
+                      child: Text('Saturday'),
                     ),
-                    Text('F'),
-                    Checkbox(
-                      value: isChecked7,
-                      onChanged: (value) {
-                        setState(() {
-                          isChecked7 = value!;
-                        });
-                        if (value!) {
-                          _days.add('S');
-                        } else {
-                          _days.remove('S');
-                        }
-                      },
+                    DropdownMenuItem<String>(
+                      value: 'Sunday',
+                      child: Text('Sunday'),
                     ),
-                    Text('S'),
                   ],
+                  decoration: InputDecoration(
+                    hintText: 'Select a day',
+                  ),
                 ),
-              )
-            ]),
+              ],
+            ),
           ),
           actions: <Widget>[
             TextButton(
@@ -196,32 +143,77 @@ class _LecturesPageState extends State<LecturesPage> {
             ),
             TextButton(
               child: Text('Save'),
-              onPressed: () {
+              onPressed: () async {
+                try {
+                  String title = _titleController.text;
+                  String _venue = _venueController.text;
+                  String _time = _timeController.text;
+                  final String userId = widget.auth.currentUser!.uid;
+
+                  int alarmId = 1;
+                  String alarmTitle = 'Morning Alarm';
+                  TimeOfDay alarmTime = TimeOfDay(hour: 12, minute: 35);
+                  int repeatDayOfWeek = DateTime.monday; // Example: Monday
+
+                  notificationService.scheduleRepeatingAlarm(
+                      alarmId, alarmTitle, alarmTime, repeatDayOfWeek,);
+
+                  final data = <String, dynamic>{
+                    "courseCode": title,
+                    "venue": _venue,
+                    "time": _time,
+                    "day": _selectedDay,
+                    "userId": userId,
+                  };
+                  print(alarmTime);
+                  print(repeatDayOfWeek);
+
+                  DocumentReference value = await Database(widget.firestore)
+                      .addData(data, "lectures");
+                  if (value.id != null) {
+                    print("Success");
+                    AnimatedSnackBar.rectangle(
+                      'Success',
+                      'Lecture Added',
+                      type: AnimatedSnackBarType.success,
+                      brightness: Brightness.light,
+                      mobileSnackBarPosition: MobileSnackBarPosition.bottom,
+                    ).show(
+                      context,
+                    );
+                  }
+                } catch (e) {
+                  print("Encountered an error: $e");
+                  AnimatedSnackBar.rectangle(
+                    'Error',
+                    '$e',
+                    type: AnimatedSnackBarType.info,
+                    brightness: Brightness.light,
+                    mobileSnackBarPosition: MobileSnackBarPosition
+                        .bottom, // Position of snackbar on mobile devices
+                    // desktopSnackBarPosition: DesktopSnackBarPosition.topRight,
+                  ).show(
+                    context,
+                  );
+                }
                 String title = _titleController.text;
                 String _venue = _venueController.text;
                 String _time = _timeController.text;
-                List<String> selectedDays = [];
-                if (isChecked1) selectedDays.add('S');
-                if (isChecked2) selectedDays.add('M');
-                if (isChecked3) selectedDays.add('T');
-                if (isChecked4) selectedDays.add('W');
-                if (isChecked5) selectedDays.add('TH');
-                if (isChecked6) selectedDays.add('F');
-                if (isChecked7) selectedDays.add('S');
-                AnimatedSnackBar.rectangle(
-                  'Success',
-                  'Lecture Added',
-                  type: AnimatedSnackBarType.success,
-                  brightness: Brightness.light,
-                  mobileSnackBarPosition: MobileSnackBarPosition
-                      .bottom, // Position of snackbar on mobile devices
-                  // desktopSnackBarPosition: DesktopSnackBarPosition.topRight,
-                ).show(
-                  context,
-                );
+                final String userId = widget.auth.currentUser!.uid;
 
-                // toastmessage("Note Added");
-
+                final data = <String, dynamic>{
+                  "courseCode": title,
+                  "venue": _venue,
+                  "time": _time,
+                  "day": _selectedDay,
+                  "userId": userId,
+                };
+                _titleController.clear();
+                _venueController.clear();
+                _timeController.clear();
+                setState(() {
+                  _selectedDay = null;
+                });
                 Card newCard = Card(
                     child: Padding(
                   padding: const EdgeInsets.all(8.0),

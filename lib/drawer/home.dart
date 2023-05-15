@@ -1,13 +1,15 @@
 import 'package:Student_schedule/drawer/about.dart';
 import 'package:Student_schedule/drawer/exams.dart';
 import 'package:Student_schedule/drawer/tests.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:student_schedule/drawer/privacy_policy.dart';
 // import 'package:student_schedule/drawer/send_feedback.dart';
 // import 'package:student_schedule/drawer/settings.dart';
 import 'package:flutter/material.dart';
 
-
 import '../loginscreen.dart';
+import '../services/auth.dart';
 import 'notes.dart';
 import 'dashboard.dart';
 import 'assignment.dart';
@@ -15,21 +17,12 @@ import 'my_drawer_header.dart';
 import 'notes.dart';
 import 'lectures.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: HomePage(),
-    );
-  }
-}
-
 class HomePage extends StatefulWidget {
+  final FirebaseAuth auth;
+  final FirebaseFirestore firestore;
+
+  const HomePage(this.auth, this.firestore);
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -43,7 +36,7 @@ class _HomePageState extends State<HomePage> {
     if (currentPage == DrawerSections.dashboard) {
       container = DashboardPage();
     } else if (currentPage == DrawerSections.lectures) {
-      container = LecturesPage();
+      container = LecturesPage(widget.auth, widget.firestore);
     } else if (currentPage == DrawerSections.assignments) {
       container = AssignmentsPage();
     } else if (currentPage == DrawerSections.notes) {
@@ -55,25 +48,26 @@ class _HomePageState extends State<HomePage> {
     } else if (currentPage == DrawerSections.about) {
       container = AboutPage();
     } else if (currentPage == DrawerSections.loginscreen) {
-       Navigator.push(
-      context,
-      MaterialPageRoute(
-      builder: (context) => loginscreen()));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  loginscreen(widget.auth, widget.firestore)));
     }
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
-          
-          title: Text("Student Activities Planner", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold), ),
+          title: Text(
+            "Student Activities Planner",
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          ),
           iconTheme: IconThemeData(color: Colors.black),
         ),
         body: container,
         drawer: Drawer(
-    
           child: SingleChildScrollView(
             child: Container(
-              
               child: Column(
                 children: [
                   MyHeaderDrawer(),
@@ -89,7 +83,6 @@ class _HomePageState extends State<HomePage> {
 
   Widget MyDrawerList() {
     return Container(
-      
       padding: EdgeInsets.only(
         top: 15,
       ),
@@ -141,7 +134,12 @@ class _HomePageState extends State<HomePage> {
             } else if (id == 7) {
               currentPage = DrawerSections.about;
             } else if (id == 8) {
-              currentPage = DrawerSections.loginscreen;
+              print('Oya get out');
+              Auth(widget.auth).signOut();
+              // currentPage = DrawerSections.loginscreen;
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) =>
+                      loginscreen(widget.auth, widget.firestore)));
             }
           });
         },

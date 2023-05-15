@@ -1,4 +1,7 @@
 import 'dart:ui';
+import 'package:Student_schedule/services/auth.dart';
+import 'package:animated_snack_bar/animated_snack_bar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -11,10 +14,13 @@ import 'Homescreen.dart';
 import 'Loginwithphoneno.dart';
 import 'SignUpScreen.dart';
 import 'Toast.dart';
-import 'drawer/drawer.dart';
+import 'drawer/home.dart';
 
 class loginscreen extends StatefulWidget {
-  const loginscreen({super.key});
+  const loginscreen(this.auth, this.firestore);
+
+  final FirebaseAuth auth;
+  final FirebaseFirestore firestore;
 
   @override
   State<loginscreen> createState() => _loginscreenState();
@@ -99,7 +105,6 @@ class _loginscreenState extends State<loginscreen> {
                             fontWeight: FontWeight.bold),
                       ),
                     ),
-                    
                     Padding(
                       padding: const EdgeInsets.all(12),
                       child: Container(
@@ -152,12 +157,15 @@ class _loginscreenState extends State<loginscreen> {
                                                   context,
                                                   MaterialPageRoute(
                                                       builder: (context) =>
-                                                          const forgetpassword()));
+                                                          forgetpassword(
+                                                              widget.auth,
+                                                              widget
+                                                                  .firestore)));
                                             },
                                             child: const Text(
                                               "Forgot password?",
-                                              style:
-                                                  TextStyle(color: Colors.black),
+                                              style: TextStyle(
+                                                  color: Colors.black),
                                             )),
                                       ],
                                     ),
@@ -171,13 +179,61 @@ class _loginscreenState extends State<loginscreen> {
                                       width: 200,
                                       child: ElevatedButton(
                                         onPressed: () {
-                                          if (_formkey.currentState!.validate()) {
+                                          if (_formkey.currentState!
+                                              .validate()) {
                                             _formkey.currentState!.save();
                                             // toastmessage("Login Successfully!");
-                                            Navigator.of(context).push(
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        MyApp()));
+                                            final Future<String?> retVal =
+                                                Auth(widget.auth)
+                                                    .signIn(_email, _password);
+                                            retVal.then((value) => {
+                                                  if (value == "Success")
+                                                    {
+                                                      AnimatedSnackBar
+                                                          .rectangle(
+                                                        'Success',
+                                                        'Login Successful ',
+                                                        type:
+                                                            AnimatedSnackBarType
+                                                                .success,
+                                                        brightness:
+                                                            Brightness.light,
+                                                        mobileSnackBarPosition:
+                                                            MobileSnackBarPosition
+                                                                .bottom, // Position of snackbar on mobile devices
+                                                        // desktopSnackBarPosition: DesktopSnackBarPosition.topRight,
+                                                      ).show(
+                                                        context,
+                                                      ),
+                                                      Navigator.of(context).push(
+                                                          MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  HomePage(
+                                                                      widget
+                                                                          .auth,
+                                                                      widget
+                                                                          .firestore)))
+                                                    }
+                                                  else
+                                                    {
+                                                      AnimatedSnackBar
+                                                          .rectangle(
+                                                        'Error',
+                                                        '$value',
+                                                        type:
+                                                            AnimatedSnackBarType
+                                                                .info,
+                                                        brightness:
+                                                            Brightness.light,
+                                                        mobileSnackBarPosition:
+                                                            MobileSnackBarPosition
+                                                                .bottom, // Position of snackbar on mobile devices
+                                                        // desktopSnackBarPosition: DesktopSnackBarPosition.topRight,
+                                                      ).show(
+                                                        context,
+                                                      )
+                                                    }
+                                                });
                                           }
                                         },
                                         style: ButtonStyle(
@@ -190,7 +246,8 @@ class _loginscreenState extends State<loginscreen> {
                                           ),
                                           backgroundColor:
                                               MaterialStateProperty.all(
-                                            const Color.fromARGB(255, 84, 169, 219),
+                                            const Color.fromARGB(
+                                                255, 84, 169, 219),
                                           ),
                                         ),
                                         child: const Text(
@@ -217,7 +274,10 @@ class _loginscreenState extends State<loginscreen> {
                                                     context,
                                                     MaterialPageRoute(
                                                         builder: (context) =>
-                                                            const signUpScreen()));
+                                                            signUpScreen(
+                                                                widget.auth,
+                                                                widget
+                                                                    .firestore)));
                                               },
                                               child: const Text(
                                                 "Sign Up",
