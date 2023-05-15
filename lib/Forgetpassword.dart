@@ -1,11 +1,16 @@
 import 'package:Student_schedule/Toast.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'Component.dart';
 import 'loginscreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class forgetpassword extends StatefulWidget {
-  const forgetpassword({super.key});
+
+  final FirebaseAuth auth;
+  final FirebaseFirestore firestore;
+
+  const forgetpassword(this.auth, this.firestore);
 
   @override
   State<forgetpassword> createState() => _forgetpasswordState();
@@ -57,7 +62,7 @@ class _forgetpasswordState extends State<forgetpassword> {
                   .then((value) {
                 toastmessage("We have Sent you email to recover password");
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => loginscreen()));
+                    MaterialPageRoute(builder: (context) => loginscreen(widget.auth, widget.firestore)));
               }).onError((error, stackTrace) {
                 toastmessage(error.toString());
               });
