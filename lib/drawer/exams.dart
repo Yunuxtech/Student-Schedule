@@ -1,43 +1,52 @@
+import 'package:animated_snack_bar/animated_snack_bar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../services/database.dart';
+
 class ExamsPage extends StatefulWidget {
+  final FirebaseAuth auth;
+  final FirebaseFirestore firestore;
+
+  ExamsPage(this.auth, this.firestore);
   @override
   _ExamsPageState createState() => _ExamsPageState();
 }
 
 class _ExamsPageState extends State<ExamsPage> {
-  final _titleController = TextEditingController();
-  final _descriptionController = TextEditingController();
-  final _dateController = TextEditingController(text: '${DateTime.now()}');
-   final _timeController = TextEditingController();
+  final _courseCodeController = TextEditingController();
+  final _venueController = TextEditingController();
+  final _dateController = TextEditingController();
+  final _timeController = TextEditingController();
   final _messageController = TextEditingController();
   List<Card> _examcard = [];
 
   @override
   void dispose() {
-    _titleController.dispose();
-    _descriptionController.dispose();
+    _courseCodeController.dispose();
+    _venueController.dispose();
     _dateController.dispose();
     _messageController.dispose();
     super.dispose();
   }
 
-   Future<void> _selectDate(BuildContext context) async {
-  final DateTime? picked = await showDatePicker(
-    context: context,
-    initialDate: DateTime.now(),
-    firstDate: DateTime(2000),
-    lastDate: DateTime(2100),
-  );
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+    );
 
-  if (picked != null) {
-    String formattedDate = DateFormat('yyyy-MM-dd').format(picked);
-    setState(() {
-      _dateController.text = formattedDate;
-    });
+    if (picked != null) {
+      String formattedDate = DateFormat('yyyy-MM-dd').format(picked);
+      setState(() {
+        _dateController.text = formattedDate;
+      });
+    }
   }
-}
 
   Future<void> _selectTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
@@ -62,32 +71,31 @@ class _ExamsPageState extends State<ExamsPage> {
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                 TextField(
-                  controller: _titleController,
+                TextField(
+                  controller: _courseCodeController,
                   decoration: InputDecoration(
                     hintText: 'Course Code',
                   ),
                 ),
                 SizedBox(height: 10),
                 TextField(
-                  controller: _descriptionController,
+                  controller: _venueController,
                   decoration: InputDecoration(
                     hintText: 'Venue',
                   ),
                 ),
                 SizedBox(height: 10),
-                 TextFormField(
+                TextFormField(
                   controller: _dateController,
                   onTap: () async {
                     FocusScope.of(context).requestFocus(new FocusNode());
                     await _selectDate(context);
-                    
                   },
                   decoration: InputDecoration(
                     hintText: 'Date',
                   ),
                 ),
-                 SizedBox(height: 10),
+                SizedBox(height: 10),
                 TextFormField(
                   controller: _timeController,
                   onTap: () async {
@@ -110,13 +118,74 @@ class _ExamsPageState extends State<ExamsPage> {
             ),
             TextButton(
               child: Text('Save'),
-              onPressed: () {
+              onPressed: () async {
+                try {
+                  String course = _courseCodeController.text;
+                  String venue = _venueController.text;
+                  String date = _dateController.text;
+                  String time = _timeController.text;
+
+                  final String userId = widget.auth.currentUser!.uid;
+
+                  final data = <String, dynamic>{
+                    "courseCode": course,
+                    "venue": venue,
+                    "date": date,
+                    "time": time,
+                    "userId": userId,
+                  };
+                  DocumentReference value =
+                      await Database(widget.firestore).addData(data, "exams");
+
+                  if (value.id != null) {
+                    print("Success");
+                    AnimatedSnackBar.rectangle(
+                      'Success',
+                      'Exam Added',
+                      type: AnimatedSnackBarType.success,
+                      brightness: Brightness.light,
+                      mobileSnackBarPosition: MobileSnackBarPosition.bottom,
+                    ).show(
+                      context,
+                    );
+                  } else {
+                    print("Error");
+                    AnimatedSnackBar.rectangle(
+                      'Error',
+                      'Ooops, something went wrong',
+                      type: AnimatedSnackBarType.error,
+                      brightness: Brightness.light,
+                      mobileSnackBarPosition: MobileSnackBarPosition.bottom,
+                    ).show(
+                      context,
+                    );
+                  }
+                  // Navigator.of(context).pop();
+                } catch (e) {
+                  print("Encountered an error: $e");
+                  AnimatedSnackBar.rectangle(
+                    'Error',
+                    '$e',
+                    type: AnimatedSnackBarType.info,
+                    brightness: Brightness.light,
+                    mobileSnackBarPosition: MobileSnackBarPosition
+                        .bottom, // Position of snackbar on mobile devices
+                    // desktopSnackBarPosition: DesktopSnackBarPosition.topRight,
+                  ).show(
+                    context,
+                  );
+                  // Navigator.of(context).pop();
+                }
                 // Perform the desired action here
-                String title = _titleController.text;
-                String description = _descriptionController.text;
+                String title = _courseCodeController.text;
+                String description = _venueController.text;
                 String date = _dateController.text;
                 String time = _timeController.text;
-                
+
+                _courseCodeController.clear();
+                _venueController.clear();
+                _dateController.clear();
+                _timeController.clear();
 
                 Card newCard = Card(
                     child: Padding(
@@ -130,12 +199,16 @@ class _ExamsPageState extends State<ExamsPage> {
                           Text(
                             title,
                             style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 10, color: Colors.brown),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 10,
+                                color: Colors.brown),
                           ),
                           Text(
                             date,
                             style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 10, color: Colors.redAccent),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 10,
+                                color: Colors.redAccent),
                           ),
                           Text(
                             time,
@@ -153,10 +226,8 @@ class _ExamsPageState extends State<ExamsPage> {
                                   child: Text('Delete'),
                                   value: "Delete",
                                 ),
-
                               ];
                             },
-                            
                             onSelected: (value) {
                               // Do something when an option is selected
                               if (value == 'Edit') {
@@ -173,17 +244,18 @@ class _ExamsPageState extends State<ExamsPage> {
                       Row(
                         children: [
                           Text(
-                              description,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 10, color: Colors.green),
-                            ),
-                          
+                            description,
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 10,
+                                color: Colors.green),
+                          ),
                         ],
                       )
                     ],
                   ),
                 ));
-                 setState(() {
+                setState(() {
                   _examcard.add(newCard);
                 });
                 // You can now use the values of the text fields as needed
@@ -199,7 +271,7 @@ class _ExamsPageState extends State<ExamsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       body: SingleChildScrollView(
+      body: SingleChildScrollView(
         child: Column(
           children: _examcard,
         ),

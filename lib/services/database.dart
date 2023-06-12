@@ -6,19 +6,16 @@ class Database {
 
   Database(this.firestore);
 
-  Stream<List<dynamic>> streamData(String uid, String collection) {
+  Stream<List<LectureModel>> streamData(String uid) {
     try {
       return firestore
-          .collection(collection)
-          .doc(uid)
-          .collection(collection)
-          // .where("done", isEqualTo: false)
+          .collection("lectures").where("userId", isEqualTo: uid)
           .snapshots()
           .map((query) {
-        final List<dynamic> retVal = <dynamic>[];
+        final List<LectureModel> retVal = <LectureModel>[];
         for (final DocumentSnapshot doc in query.docs) {
-          // retVal.add(LectureModel.fromDocumentSnapshot(documentSnapshot: doc));
-          retVal.add(doc);
+          retVal.add(LectureModel.fromDocumentSnapshot(documentSnapshot: doc));
+          // retVal                                                                                                                                                                       .add(doc);
         }
         print("DOCS $retVal");
         return retVal;
