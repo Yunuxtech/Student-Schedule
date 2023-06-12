@@ -1,10 +1,14 @@
+import 'package:Student_schedule/drawer/LectureCard.dart';
+import 'package:Student_schedule/model/LectureModel.dart';
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-import '../alarmFunctions/scheduleRepeatingAlarm.dart';
+import '../alarmFunctions/NotificationService.dart';
 import '../services/database.dart';
+import 'home.dart';
 
 class LecturesPage extends StatefulWidget {
   final FirebaseAuth auth;
@@ -24,7 +28,7 @@ class _LecturesPageState extends State<LecturesPage> {
   String? _selectedDay;
   List<Card> _lecturecard = [];
 
-  final NotificationService notificationService = NotificationService();
+  // final NotificationService notificationService = NotificationService();
 
   @override
   void initState() {
@@ -150,14 +154,6 @@ class _LecturesPageState extends State<LecturesPage> {
                   String _time = _timeController.text;
                   final String userId = widget.auth.currentUser!.uid;
 
-                  int alarmId = 1;
-                  String alarmTitle = 'Morning Alarm';
-                  TimeOfDay alarmTime = TimeOfDay(hour: 12, minute: 35);
-                  int repeatDayOfWeek = DateTime.monday; // Example: Monday
-
-                  notificationService.scheduleRepeatingAlarm(
-                      alarmId, alarmTitle, alarmTime, repeatDayOfWeek,);
-
                   final data = <String, dynamic>{
                     "courseCode": title,
                     "venue": _venue,
@@ -165,12 +161,33 @@ class _LecturesPageState extends State<LecturesPage> {
                     "day": _selectedDay,
                     "userId": userId,
                   };
-                  print(alarmTime);
-                  print(repeatDayOfWeek);
 
                   DocumentReference value = await Database(widget.firestore)
                       .addData(data, "lectures");
+
                   if (value.id != null) {
+                    // set the alarm Here
+
+                    int alarmId = 1;
+                    String alarmTitle = title;
+                    int alarmHour = int.parse(_time.split(":").elementAt(0));
+                    var alarmMinute = int.parse(_time.split(":").elementAt(1));
+                    TimeOfDay alarmTime =
+                        TimeOfDay(hour: alarmHour, minute: alarmMinute);
+                    int repeatDayOfWeek = DateTime.monday; // Example: Monday
+
+                    // notificationService.scheduleRepeatingAlarm(
+                    //   alarmId,
+                    //   alarmTitle,
+                    //   alarmTime,
+                    //   repeatDayOfWeek,
+                    // );
+
+                    // HomePage._scheduleWeeklyMondayTenAMNotification();
+
+                    print("Alarm time is :: $alarmTime");
+                    print("Repeat Day is :: $repeatDayOfWeek");
+
                     print("Success");
                     AnimatedSnackBar.rectangle(
                       'Success',
@@ -196,84 +213,84 @@ class _LecturesPageState extends State<LecturesPage> {
                     context,
                   );
                 }
-                String title = _titleController.text;
-                String _venue = _venueController.text;
-                String _time = _timeController.text;
-                final String userId = widget.auth.currentUser!.uid;
+                // String title = _titleController.text;
+                // String _venue = _venueController.text;
+                // String _time = _timeController.text;
+                // final String userId = widget.auth.currentUser!.uid;
 
-                final data = <String, dynamic>{
-                  "courseCode": title,
-                  "venue": _venue,
-                  "time": _time,
-                  "day": _selectedDay,
-                  "userId": userId,
-                };
+                // final data = <String, dynamic>{
+                //   "courseCode": title,
+                //   "venue": _venue,
+                //   "time": _time,
+                //   "day": _selectedDay,
+                //   "userId": userId,
+                // };
                 _titleController.clear();
                 _venueController.clear();
                 _timeController.clear();
                 setState(() {
                   _selectedDay = null;
                 });
-                Card newCard = Card(
-                    child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            title,
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 10),
-                          ),
-                          Text(
-                            _time,
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 10),
-                          ),
-                          PopupMenuButton(
-                            itemBuilder: (BuildContext context) {
-                              return [
-                                PopupMenuItem(
-                                  child: Text('Edit'),
-                                  value: "Edit",
-                                ),
-                                PopupMenuItem(
-                                  child: Text('Delete'),
-                                  value: "Delete",
-                                ),
-                              ];
-                            },
-                            onSelected: (value) {
-                              // Do something when an option is selected
-                              if (value == 'Edit') {
-                                _showDialog();
-                                // navigateToEditPage(item);
-                              } else if (value == 'delete') {
-                                // deleteById(id);
-                              }
-                            },
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Text(
-                            _venue,
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 10),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                ));
+                // Card(
+                //     child: Padding(
+                //   padding: const EdgeInsets.all(8.0),
+                //   child: Column(
+                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //     children: [
+                //       Row(
+                //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //         children: [
+                //           Text(
+                //             title,
+                //             style: TextStyle(
+                //                 fontWeight: FontWeight.bold, fontSize: 10),
+                //           ),
+                //           Text(
+                //             _time,
+                //             style: TextStyle(
+                //                 fontWeight: FontWeight.bold, fontSize: 10),
+                //           ),
+                //           PopupMenuButton(
+                //             itemBuilder: (BuildContext context) {
+                //               return [
+                //                 PopupMenuItem(
+                //                   child: Text('Edit'),
+                //                   value: "Edit",
+                //                 ),
+                //                 PopupMenuItem(
+                //                   child: Text('Delete'),
+                //                   value: "Delete",
+                //                 ),
+                //               ];
+                //             },
+                //             onSelected: (value) {
+                //               // Do something when an option is selected
+                //               if (value == 'Edit') {
+                //                 _showDialog();
+                //                 // navigateToEditPage(item);
+                //               } else if (value == 'delete') {
+                //                 // deleteById(id);
+                //               }
+                //             },
+                //           ),
+                //         ],
+                //       ),
+                //       Row(
+                //         children: [
+                //           Text(
+                //             _venue,
+                //             style: TextStyle(
+                //                 fontWeight: FontWeight.bold, fontSize: 10),
+                //           ),
+                //         ],
+                //       )
+                //     ],
+                //   ),
+                // ));
 
-                setState(() {
-                  _lecturecard.add(newCard);
-                });
+                // setState(() {
+                //   _lecturecard.add(newCard);
+                // });
                 Navigator.of(context).pop();
               },
             ),
@@ -286,10 +303,33 @@ class _LecturesPageState extends State<LecturesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: _lecturecard,
-        ),
+      body: StreamBuilder(
+        stream: Database(widget.firestore)
+            .streamData(widget.auth.currentUser!.uid),
+        builder: (BuildContext context,
+            AsyncSnapshot<List<LectureModel>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.active) {
+            if (snapshot.data!.isEmpty) {
+              return const Center(
+                child: Text("You don't have any lectures"),
+              );
+            }
+            return ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (_, index) {
+                return LectureCard(
+                  firestore: widget.firestore,
+                  uid: widget.auth.currentUser!.uid,
+                  lecture: snapshot.data![index],
+                );
+              },
+            );
+          } else {
+            return const Center(
+              child: Text("loading..."),
+            );
+          }
+        },
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.green,
