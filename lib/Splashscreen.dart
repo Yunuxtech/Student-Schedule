@@ -1,13 +1,10 @@
 import 'dart:async';
-import 'package:Student_schedule/drawer/dashboard.dart';
 import 'package:Student_schedule/drawer/home.dart';
 import 'package:Student_schedule/services/auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:lottie/lottie.dart';
 import 'package:flutter/material.dart';
-import 'Homescreen.dart';
 import 'loginscreen.dart';
 
 

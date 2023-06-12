@@ -1,14 +1,13 @@
 import 'dart:ui';
-import 'package:Student_schedule/drawer/dashboard.dart';
 import 'package:Student_schedule/services/auth.dart';
 import 'package:Student_schedule/services/database.dart';
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 
-import 'Component.dart';
-import 'Toast.dart';
-import 'Homescreen.dart';
+// import 'Component.dart';
+// import 'Toast.dart';
+// import 'Homescreen.dart';
 import 'package:flutter/material.dart';
 
 import 'drawer/home.dart';
