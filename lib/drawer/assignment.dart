@@ -1,3 +1,5 @@
+import 'package:Student_schedule/drawer/AssignmentCard.dart';
+import 'package:Student_schedule/model/AssignmentModel.dart';
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -149,77 +151,11 @@ class _AssignmentPageState extends State<AssignmentsPage> {
                   ).show(
                     context,
                   );
-                  // Navigator.of(context).pop();
                 }
-                // Perform the desired action here
-                String title = _courseCose.text;
-                String date = _dateController.text;
-                String message = _givenAssignmentController.text;
-
                 _givenAssignmentController.clear();
                 _dateController.clear();
                 _courseCose.clear();
 
-                Card newCard = Card(
-                    child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            title,
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 10),
-                          ),
-                          Text(
-                            date,
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 10),
-                          ),
-                          PopupMenuButton(
-                            itemBuilder: (BuildContext context) {
-                              return [
-                                PopupMenuItem(
-                                  child: Text('Edit'),
-                                  value: "Edit",
-                                ),
-                                PopupMenuItem(
-                                  child: Text('Delete'),
-                                  value: "Delete",
-                                ),
-                              ];
-                            },
-                            onSelected: (value) {
-                              // Do something when an option is selected
-                              if (value == 'Edit') {
-                                _showDialog();
-                                // navigateToEditPage(item);
-                              } else if (value == 'delete') {
-                                // deleteById(id);
-                              }
-                            },
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Text(
-                            message,
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 10),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                ));
-
-                setState(() {
-                  _assignmentcard.add(newCard);
-                });
                 Navigator.of(context).pop();
               },
             ),
@@ -232,10 +168,33 @@ class _AssignmentPageState extends State<AssignmentsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: _assignmentcard,
-        ),
+      body: StreamBuilder(
+        stream: Database(widget.firestore)
+            .streamDataAssignment(widget.auth.currentUser!.uid),
+        builder: (BuildContext context,
+            AsyncSnapshot<List<AssignmentModel>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.active) {
+            if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return const Center(
+                child: Text("You don't have any assignments"),
+              );
+            }
+            return ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (_, index) {
+                return AssignmentCard(
+                  firestore: widget.firestore,
+                  uid: widget.auth.currentUser!.uid,
+                  assignment: snapshot.data![index],
+                );
+              },
+            );
+          } else {
+            return const Center(
+              child: Text("loading..."),
+            );
+          }
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _showDialog,

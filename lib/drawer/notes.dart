@@ -1,10 +1,12 @@
 import 'package:Student_schedule/Toast.dart';
+import 'package:Student_schedule/model/NoteModel.dart';
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../services/database.dart';
+import 'NoteCard.dart';
 
 class NotesPage extends StatefulWidget {
   final FirebaseAuth auth;
@@ -121,17 +123,6 @@ class _NotesPageState extends State<NotesPage> {
 
                   _titleController.clear();
                   _messageController.clear();
-
-                  Card newCard = Card(
-                      // child: ListTile(
-                      //   title: Text(title),
-                      //   subtitle: Text(message),
-                      // ),
-                      );
-                  setState(() {
-                    // Add the new card to the container
-                    _notesContainer.add(newCard);
-                  });
                   Navigator.of(context).pop();
                 },
               ),
@@ -145,25 +136,33 @@ class _NotesPageState extends State<NotesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            GridView.count(
-              crossAxisCount: 2,
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              children: _notesContainer
-                  .map((notesContainer) => new Card(
-                        child: ListTile(
-                          title: Text(_titleController.text),
-                          subtitle: Text(_messageController.text),
-                        ),
-                      ))
-                  .toList(),
-            ),
-            // Other widgets can be added here as well
-          ],
-        ),
+      body: StreamBuilder(
+        stream: Database(widget.firestore)
+            .streamDataNote(widget.auth.currentUser!.uid),
+        builder: (BuildContext context,
+            AsyncSnapshot<List<NoteModel>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.active) {
+            if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return const Center(
+                child: Text("You don't have any Note"),
+              );
+            }
+            return ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (_, index) {
+                return NoteCard(
+                  firestore: widget.firestore,
+                  uid: widget.auth.currentUser!.uid,
+                  note: snapshot.data![index],
+                );
+              },
+            );
+          } else {
+            return const Center(
+              child: Text("loading..."),
+            );
+          } 
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _showDialog,

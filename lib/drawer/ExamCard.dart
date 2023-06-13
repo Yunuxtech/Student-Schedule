@@ -1,26 +1,29 @@
+import 'package:Student_schedule/model/AssignmentModel.dart';
+import 'package:Student_schedule/model/ExamModel.dart';
 import 'package:Student_schedule/model/LectureModel.dart';
+import 'package:Student_schedule/model/TestModel.dart';
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../services/database.dart';
 
-class LectureCard extends StatefulWidget {
-  final LectureModel lecture;
+class ExamCard extends StatefulWidget {
+  final ExamModel exam;
   final FirebaseFirestore firestore;
   final String uid;
 
-  const LectureCard(
+  const ExamCard(
       {super.key,
-      required this.lecture,
+      required this.exam,
       required this.firestore,
       required this.uid});
 
   @override
-  State<LectureCard> createState() => _LectureCardState();
+  State<ExamCard> createState() => _ExamCardState();
 }
 
-class _LectureCardState extends State<LectureCard> {
+class _ExamCardState extends State<ExamCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -33,21 +36,28 @@ class _LectureCardState extends State<LectureCard> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                widget.lecture.courseCode,
+                widget.exam.courseCode,
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 15,
+                    fontSize: 10,
+                    color: Colors.brown),
+              ),
+              Text(
+                widget.exam.date,
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 10,
                     color: Colors.redAccent),
               ),
               Text(
-                widget.lecture.time,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                widget.exam.time,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
               ),
               GestureDetector(
                 onTap: () {
-                  print(widget.lecture.lectureId);
+                  print(widget.exam.examId);
                   Database(widget.firestore)
-                      .deleteDocument(widget.lecture.lectureId, "lectures");
+                      .deleteDocument(widget.exam.examId, "exams");
                   AnimatedSnackBar.rectangle(
                     'Delete',
                     'Record Deleted',
@@ -72,15 +82,11 @@ class _LectureCardState extends State<LectureCard> {
           Row(
             children: [
               Text(
-                widget.lecture.venue,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-              ),
-              SizedBox(
-                width: 100,
-              ),
-              Text(
-                widget.lecture.day,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                widget.exam.venue,
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 10,
+                    color: Colors.green),
               ),
             ],
           )

@@ -1,3 +1,4 @@
+import 'package:Student_schedule/model/AssignmentModel.dart';
 import 'package:Student_schedule/model/LectureModel.dart';
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -5,22 +6,22 @@ import 'package:flutter/material.dart';
 
 import '../services/database.dart';
 
-class LectureCard extends StatefulWidget {
-  final LectureModel lecture;
+class AssignmentCard extends StatefulWidget {
+  final AssignmentModel assignment;
   final FirebaseFirestore firestore;
   final String uid;
 
-  const LectureCard(
+  const AssignmentCard(
       {super.key,
-      required this.lecture,
+      required this.assignment,
       required this.firestore,
       required this.uid});
 
   @override
-  State<LectureCard> createState() => _LectureCardState();
+  State<AssignmentCard> createState() => _AssignmentCardState();
 }
 
-class _LectureCardState extends State<LectureCard> {
+class _AssignmentCardState extends State<AssignmentCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -33,21 +34,22 @@ class _LectureCardState extends State<LectureCard> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                widget.lecture.courseCode,
+                widget.assignment.courseCode,
                 style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15,
-                    color: Colors.redAccent),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                  // color: Color.fromARGB(31, 9, 9, 9),
+                ),
               ),
               Text(
-                widget.lecture.time,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                widget.assignment.date,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
               ),
-              GestureDetector(
+                  GestureDetector(
                 onTap: () {
-                  print(widget.lecture.lectureId);
+                  print(widget.assignment.assignmentId);
                   Database(widget.firestore)
-                      .deleteDocument(widget.lecture.lectureId, "lectures");
+                      .deleteDocument(widget.assignment.assignmentId, "assignments");
                   AnimatedSnackBar.rectangle(
                     'Delete',
                     'Record Deleted',
@@ -71,17 +73,21 @@ class _LectureCardState extends State<LectureCard> {
           ),
           Row(
             children: [
-              Text(
-                widget.lecture.venue,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+              Expanded(
+                child: Container(
+                  child: Text(
+                    widget.assignment.assignment,
+                    textAlign: TextAlign.justify,
+                    style: TextStyle(
+                      fontSize: 15,
+                    ),
+                  ),
+                ),
               ),
-              SizedBox(
-                width: 100,
-              ),
-              Text(
-                widget.lecture.day,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-              ),
+              // Text(
+              //   widget.assignment.assignment,
+              //   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
+              // ),
             ],
           )
         ],

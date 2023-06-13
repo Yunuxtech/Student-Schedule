@@ -12,11 +12,10 @@ class NoteModel {
     this.title,
     this.content,
   );
-
   NoteModel.fromDocumentSnapshot({required DocumentSnapshot documentSnapshot}){
     noteId = documentSnapshot.id;
-    title = documentSnapshot.get('title') as String;
-    content = documentSnapshot.get('content') as String;
+    title = documentSnapshot.get('courseCode') as String;
+    content = documentSnapshot.get('message') as String;
   }
 
 

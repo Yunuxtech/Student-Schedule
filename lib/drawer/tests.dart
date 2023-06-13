@@ -1,3 +1,4 @@
+import 'package:Student_schedule/model/TestModel.dart';
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -5,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../services/database.dart';
+import 'TestCard.dart';
 
 class TestsPage extends StatefulWidget {
   final FirebaseAuth auth;
@@ -177,88 +179,13 @@ class _TestsPageState extends State<TestsPage> {
                   // Navigator.of(context).pop();
                 }
                 // Perform the desired action here
-                String title = _courseCodeController.text;
-                String description = _venueController.text;
-                String date = _dateController.text;
-                String time = _timeController.text;
-                String message = _messageController.text;
+                
 
                 _courseCodeController.clear();
                 _dateController.clear();
                 _venueController.clear();
                 _timeController.clear();
 
-                Card newCard = Card(
-                    child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            title,
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 10,
-                                color: Colors.brown),
-                          ),
-                          Text(
-                            date,
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 10,
-                                color: Colors.redAccent),
-                          ),
-                          Text(
-                            time,
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 10),
-                          ),
-                          PopupMenuButton(
-                            itemBuilder: (BuildContext context) {
-                              return [
-                                PopupMenuItem(
-                                  child: Text('Edit'),
-                                  value: "Edit",
-                                ),
-                                PopupMenuItem(
-                                  child: Text('Delete'),
-                                  value: "Delete",
-                                ),
-                              ];
-                            },
-                            onSelected: (value) {
-                              // Do something when an option is selected
-                              if (value == 'Edit') {
-                                _showDialog();
-                                // navigateToEditPage(item);
-                              } else if (value == 'delete') {
-                                // deleteById(id);
-                                dispose();
-                              }
-                            },
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Text(
-                            description,
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 10,
-                                color: Colors.green),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                ));
-                setState(() {
-                  _testcard.add(newCard);
-                });
                 // You can now use the values of the text fields as needed
                 Navigator.of(context).pop();
               },
@@ -272,10 +199,33 @@ class _TestsPageState extends State<TestsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: _testcard,
-        ),
+      body: StreamBuilder(
+        stream: Database(widget.firestore)
+            .streamDataTest(widget.auth.currentUser!.uid),
+        builder: (BuildContext context,
+            AsyncSnapshot<List<TestModel>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.active) {
+            if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return const Center(
+                child: Text("You don't have any Test"),
+              );
+            }
+            return ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (_, index) {
+                return TestCard(
+                  firestore: widget.firestore,
+                  uid: widget.auth.currentUser!.uid,
+                  test: snapshot.data![index],
+                );
+              },
+            );
+          } else {
+            return const Center(
+              child: Text("loading..."),
+            );
+          } 
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _showDialog,

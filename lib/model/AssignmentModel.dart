@@ -5,21 +5,21 @@ class AssignmentModel {
   late String assignmentId;
   late String courseCode;
   late String date;
-  late String topic;
+  late String assignment;
 
 
   AssignmentModel(
     this.assignmentId,
     this.courseCode,
     this.date,
-    this.topic,
+    this.assignment,
   );
 
   AssignmentModel.fromDocumentSnapshot({required DocumentSnapshot documentSnapshot}){
     assignmentId = documentSnapshot.id;
     courseCode = documentSnapshot.get('courseCode') as String;
     date = documentSnapshot.get('date') as String;
-    topic = documentSnapshot.get('topic') as String;
+    assignment = documentSnapshot.get('assignment') as String;
   }
 
 

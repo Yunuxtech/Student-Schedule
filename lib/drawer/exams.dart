@@ -1,3 +1,5 @@
+import 'package:Student_schedule/drawer/ExamCard.dart';
+import 'package:Student_schedule/model/ExamModel.dart';
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -187,77 +189,10 @@ class _ExamsPageState extends State<ExamsPage> {
                 _dateController.clear();
                 _timeController.clear();
 
-                Card newCard = Card(
-                    child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            title,
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 10,
-                                color: Colors.brown),
-                          ),
-                          Text(
-                            date,
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 10,
-                                color: Colors.redAccent),
-                          ),
-                          Text(
-                            time,
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 10),
-                          ),
-                          PopupMenuButton(
-                            itemBuilder: (BuildContext context) {
-                              return [
-                                PopupMenuItem(
-                                  child: Text('Edit'),
-                                  value: "Edit",
-                                ),
-                                PopupMenuItem(
-                                  child: Text('Delete'),
-                                  value: "Delete",
-                                ),
-                              ];
-                            },
-                            onSelected: (value) {
-                              // Do something when an option is selected
-                              if (value == 'Edit') {
-                                _showDialog();
-                                // navigateToEditPage(item);
-                              } else if (value == 'delete') {
-                                // deleteById(id);
-                                dispose();
-                              }
-                            },
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Text(
-                            description,
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 10,
-                                color: Colors.green),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                ));
-                setState(() {
-                  _examcard.add(newCard);
-                });
+               
+                // setState(() {
+                //   _examcard.add(newCard);
+                // });
                 // You can now use the values of the text fields as needed
                 Navigator.of(context).pop();
               },
@@ -271,10 +206,33 @@ class _ExamsPageState extends State<ExamsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: _examcard,
-        ),
+      body: StreamBuilder(
+        stream: Database(widget.firestore)
+            .streamDataExam(widget.auth.currentUser!.uid),
+        builder: (BuildContext context,
+            AsyncSnapshot<List<ExamModel>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.active) {
+            if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return const Center(
+                child: Text("You don't have any Test"),
+              );
+            }
+            return ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (_, index) {
+                return ExamCard(
+                  firestore: widget.firestore,
+                  uid: widget.auth.currentUser!.uid,
+                  exam: snapshot.data![index],
+                );
+              },
+            );
+          } else {
+            return const Center(
+              child: Text("loading..."),
+            );
+          } 
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _showDialog,

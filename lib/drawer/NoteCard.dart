@@ -1,26 +1,27 @@
 import 'package:Student_schedule/model/LectureModel.dart';
+import 'package:Student_schedule/model/NoteModel.dart';
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../services/database.dart';
 
-class LectureCard extends StatefulWidget {
-  final LectureModel lecture;
+class NoteCard extends StatefulWidget {
+  final NoteModel note;
   final FirebaseFirestore firestore;
   final String uid;
 
-  const LectureCard(
+  const NoteCard(
       {super.key,
-      required this.lecture,
+      required this.note,
       required this.firestore,
       required this.uid});
 
   @override
-  State<LectureCard> createState() => _LectureCardState();
+  State<NoteCard> createState() => _NoteCardState();
 }
 
-class _LectureCardState extends State<LectureCard> {
+class _NoteCardState extends State<NoteCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -33,21 +34,18 @@ class _LectureCardState extends State<LectureCard> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                widget.lecture.courseCode,
+                widget.note.title,
                 style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15,
-                    color: Colors.redAccent),
-              ),
-              Text(
-                widget.lecture.time,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                  // color: Color.fromARGB(31, 9, 9, 9),
+                ),
               ),
               GestureDetector(
                 onTap: () {
-                  print(widget.lecture.lectureId);
+                  print(widget.note.noteId);
                   Database(widget.firestore)
-                      .deleteDocument(widget.lecture.lectureId, "lectures");
+                      .deleteDocument(widget.note.noteId, "notes");
                   AnimatedSnackBar.rectangle(
                     'Delete',
                     'Record Deleted',
@@ -71,16 +69,16 @@ class _LectureCardState extends State<LectureCard> {
           ),
           Row(
             children: [
-              Text(
-                widget.lecture.venue,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-              ),
-              SizedBox(
-                width: 100,
-              ),
-              Text(
-                widget.lecture.day,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+              Expanded(
+                child: Container(
+                  child: Text(
+                    widget.note.content,
+                    textAlign: TextAlign.justify,
+                    style: TextStyle(
+                      fontSize: 15,
+                    ),
+                  ),
+                ),
               ),
             ],
           )

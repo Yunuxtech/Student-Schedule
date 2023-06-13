@@ -231,66 +231,7 @@ class _LecturesPageState extends State<LecturesPage> {
                 setState(() {
                   _selectedDay = null;
                 });
-                // Card(
-                //     child: Padding(
-                //   padding: const EdgeInsets.all(8.0),
-                //   child: Column(
-                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //     children: [
-                //       Row(
-                //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //         children: [
-                //           Text(
-                //             title,
-                //             style: TextStyle(
-                //                 fontWeight: FontWeight.bold, fontSize: 10),
-                //           ),
-                //           Text(
-                //             _time,
-                //             style: TextStyle(
-                //                 fontWeight: FontWeight.bold, fontSize: 10),
-                //           ),
-                //           PopupMenuButton(
-                //             itemBuilder: (BuildContext context) {
-                //               return [
-                //                 PopupMenuItem(
-                //                   child: Text('Edit'),
-                //                   value: "Edit",
-                //                 ),
-                //                 PopupMenuItem(
-                //                   child: Text('Delete'),
-                //                   value: "Delete",
-                //                 ),
-                //               ];
-                //             },
-                //             onSelected: (value) {
-                //               // Do something when an option is selected
-                //               if (value == 'Edit') {
-                //                 _showDialog();
-                //                 // navigateToEditPage(item);
-                //               } else if (value == 'delete') {
-                //                 // deleteById(id);
-                //               }
-                //             },
-                //           ),
-                //         ],
-                //       ),
-                //       Row(
-                //         children: [
-                //           Text(
-                //             _venue,
-                //             style: TextStyle(
-                //                 fontWeight: FontWeight.bold, fontSize: 10),
-                //           ),
-                //         ],
-                //       )
-                //     ],
-                //   ),
-                // ));
-
-                // setState(() {
-                //   _lecturecard.add(newCard);
-                // });
+                
                 Navigator.of(context).pop();
               },
             ),
@@ -305,7 +246,7 @@ class _LecturesPageState extends State<LecturesPage> {
     return Scaffold(
       body: StreamBuilder(
         stream: Database(widget.firestore)
-            .streamData(widget.auth.currentUser!.uid),
+            .streamDataLecture(widget.auth.currentUser!.uid),
         builder: (BuildContext context,
             AsyncSnapshot<List<LectureModel>> snapshot) {
           if (snapshot.connectionState == ConnectionState.active) {
